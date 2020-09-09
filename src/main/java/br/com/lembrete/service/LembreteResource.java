@@ -4,6 +4,7 @@ import java.util.regex.Pattern;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -74,6 +75,23 @@ public class LembreteResource {
 		
 		return Response.ok(lembrete).build();
 	}
+	
+	
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON + CHARSET_UTF8)
+	@Produces(MediaType.APPLICATION_JSON + CHARSET_UTF8)
+	public Response post(Lembrete lembrete) {
+		LembreteMapper mapper = new LembreteMapper();
+		
+		if(lembrete.getDescricao().isEmpty() || lembrete.getTitulo().isEmpty()) {
+			throw new ApiException(400, "Um ou mais parâmetros obrigatorios não foram informados");
+		}
+		
+		mapper.insert(lembrete);
+		
+		return Response.ok(lembrete).build();
+	}
+	
 	
 	
 }
