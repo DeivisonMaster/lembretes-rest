@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -57,7 +58,7 @@ public class LembreteResource {
 	@Path("/{id}")
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON + CHARSET_UTF8)
-	public Response get(@PathParam("id") int id) {
+	public Response get(@PathParam("id") int id) throws ApiException {
 		
 		if(id == 0) {
 			throw new ApiException(400, "O id deve ser maior ou igual a 1");
@@ -80,7 +81,7 @@ public class LembreteResource {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON + CHARSET_UTF8)
 	@Produces(MediaType.APPLICATION_JSON + CHARSET_UTF8)
-	public Response post(Lembrete lembrete) {
+	public Response post(Lembrete lembrete) throws ApiException {
 		LembreteMapper mapper = new LembreteMapper();
 		
 		if(lembrete.getDescricao().isEmpty() || lembrete.getTitulo().isEmpty()) {
@@ -88,6 +89,25 @@ public class LembreteResource {
 		}
 		
 		mapper.insert(lembrete);
+		
+		return Response.ok(lembrete).build();
+	}
+	
+	
+	
+	@PUT
+	@Path("/{id}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response put(Lembrete lembrete, @PathParam("id") int id) {
+		LembreteMapper mapper = new LembreteMapper();
+		
+		if(id <= 0) {
+			throw new ApiException(400, "O id do lembrete não pode ser menor ou igual a zero");
+		}
+		
+		lembrete.setId(id);
+		mapper.update(lembrete);
 		
 		return Response.ok(lembrete).build();
 	}
