@@ -13,7 +13,7 @@ public class LembreteRepository {
 	private static final int PAGE_LENGTH = 5;
 	
 	
-	public List<Lembrete> getTodosPorPaginacao(int page){
+	public List<Lembrete> getTodosPorPaginacao(int page) throws ApiException { 
 		List<Lembrete> lista = new ArrayList<>();
 		
 		try {
@@ -43,7 +43,7 @@ public class LembreteRepository {
 		return lista;
 	}
 
-	public List<Lembrete> getTodos(){
+	public List<Lembrete> getTodos() throws ApiException {
 		List<Lembrete> lista = new ArrayList<>();
 		
 		try {

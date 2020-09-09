@@ -5,14 +5,17 @@ import java.util.regex.Pattern;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import br.com.lembrete.excecoes.ApiException;
+import br.com.lembrete.model.Lembrete;
 import br.com.lembrete.model.LembreteRepository;
 import br.com.lembrete.model.Pagina;
+import br.com.lembrete.orm.LembreteMapper;
 
 @Path("/lembrete")
 public class LembreteResource {
@@ -47,6 +50,31 @@ public class LembreteResource {
 		return Response.ok(new Pagina(repository.getTodosPorPaginacao(Integer.parseInt(page)))).build();
 			
 	}
+	
+	
+	@GET
+	@Path("/{id}")
+	@Consumes(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON + CHARSET_UTF8)
+	public Response get(@PathParam("id") int id) {
+		
+		if(id == 0) {
+			throw new ApiException(400, "O id deve ser maior ou igual a 1");
+		}
+		
+		LembreteMapper mapper = new LembreteMapper();
+		Lembrete lembrete = new Lembrete();
+		lembrete.setId(id);
+		
+		lembrete = mapper.select(lembrete);
+		
+		if(lembrete == null) {
+			throw new ApiException(204, "O lembrete especificado não existe");
+		}
+		
+		return Response.ok(lembrete).build();
+	}
+	
 	
 }
 
