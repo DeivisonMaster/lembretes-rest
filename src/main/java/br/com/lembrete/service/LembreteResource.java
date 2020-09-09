@@ -3,6 +3,7 @@ package br.com.lembrete.service;
 import java.util.regex.Pattern;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -88,7 +89,7 @@ public class LembreteResource {
 			throw new ApiException(400, "Um ou mais parâmetros obrigatorios não foram informados");
 		}
 		
-		mapper.insert(lembrete);
+		lembrete = mapper.insert(lembrete);
 		
 		return Response.ok(lembrete).build();
 	}
@@ -99,7 +100,7 @@ public class LembreteResource {
 	@Path("/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response put(Lembrete lembrete, @PathParam("id") int id) {
+	public Response put(Lembrete lembrete, @PathParam("id") int id) throws ApiException {
 		LembreteMapper mapper = new LembreteMapper();
 		
 		if(id <= 0) {
@@ -107,12 +108,28 @@ public class LembreteResource {
 		}
 		
 		lembrete.setId(id);
-		mapper.update(lembrete);
+		lembrete = mapper.update(lembrete);
 		
 		return Response.ok(lembrete).build();
 	}
 	
 	
+	@DELETE
+	@Path("/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response delete(@PathParam("id") int id) {
+		LembreteMapper mapper = new LembreteMapper();
+		
+		if(id <= 0) {
+			throw new ApiException(400, "O id do lembrete não pode ser menor ou igual a zero");
+		}
+		
+		Lembrete lembrete = new Lembrete();
+		lembrete.setId(id);
+		lembrete = mapper.delete(lembrete);
+		
+		return Response.ok(lembrete).build();
+	}
 	
 }
 
